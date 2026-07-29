@@ -1,0 +1,164 @@
+---
+name: voice-ai-prompting
+description: Write, review, and debug prompts for the Bigly Sales Voice AI platform — outbound and inbound phone scripts that qualify leads, transfer to a live agent, or schedule appointments. Use when creating or editing a Voice Prompt, an Intro, an Out of Office prompt, or a scheduled callback prompt; when asked why a voice bot transferred early, skipped a question, or ignored a timing/tone instruction; or when reviewing an existing call script against platform conventions.
+---
+
+# Voice AI Prompting
+
+Prompts for this platform are phone call scripts. They drive a live conversation
+with tool calls (`transfer_call`, `end_call`) as the terminal actions, so the cost
+of a loose instruction is a real call transferred to the wrong place or dropped on
+a real person.
+
+## Know what the prompt can actually control
+
+The platform is four independent components. The prompt is the LLM (GPT-4.1 Mini)
+and **only** the LLM. Instructions aimed at the other three silently do nothing:
+
+| You want | Owned by | Prompt can change it? |
+| --- | --- | --- |
+| Conversation flow, questions, business logic, wording | LLM | Yes |
+| When the bot decides the caller stopped talking, response delay | Turn detection (LiveKit) | No |
+| Ignoring background noise, transcription accuracy | STT (Parakeet) | No |
+| Voice, tone, pacing, speaking softly/slowly, pronunciation | TTS (Cartesia) | No |
+
+So "wait two seconds before answering", "ignore background noise", and "speak in a
+soft, slow voice" are dead text. Fix those in the component config, not the prompt.
+See `references/architecture.md`.
+
+## The two layers
+
+Every script is split across two places. Putting content in the wrong layer is the
+most common structural mistake.
+
+**Voice Prompt** — global, shared by every flow, changes rarely. Persona, general
+conversation rules, the tool list, global business rules, default restrictions
+(pricing), and the standard rule blocks below.
+
+**Intro** — one specific conversation. Opening sentence, call purpose,
+qualification questions, transfer logic, scheduling logic, branching, rebuttals.
+
+A rule that would be true on every call belongs in the Voice Prompt. If you find
+yourself pasting the same rule into three Intros, it was a Voice Prompt rule.
+
+## Hard requirements
+
+Check every script against these. They are not stylistic.
+
+- Both opening sentences — inbound **and** outbound — contain the exact phrase
+  **"on a recorded line."**
+- At least **two questions**, even when one would do. This is a guard against the
+  bot racing to a transfer on a single answer.
+- Every phone number is full U.S. E.164 with the `+1` prefix: `+17076412107`.
+- Every tool the flow needs is listed in the Voice Prompt. A transfer flow without
+  `transfer_call` listed fails silently.
+- Scheduling scripts must **not** list `transfer_call` at all, and must state
+  explicitly that transfers are not available.
+- Prompt Variables define at minimum Bot Name, Goal, Company Name.
+- Default pricing rule, unless the use case overrides it:
+  `You can't discuss the price, only a licensed agent can do so.`
+- An Out of Office prompt exists — except for scheduling scripts, where business
+  hours are irrelevant.
+- A scheduled callback Intro exists.
+
+## Writing conventions
+
+**Sections.** Markdown headings, referenced by name in the flow (`proceed to
+#Qualification Flow`). Sections make the prompt modular — a block can be reordered
+or swapped without touching the rest.
+
+**Variables.** `{}` is a real runtime injection: `{first_name}`, `{Q1}`, `{date}`,
+`{working_hours}`. `[]` is a reference for the LLM, not an injection:
+`"Hello [user first name]"` tells the model to look up a value it already has.
+
+**Inject each contact attribute once.** Questions used once (`{Q1}`) can be
+injected inline. Contact attributes go in a single `# User Personal Information`
+section near the end and are referenced with `[]` elsewhere. Besides being cleaner,
+this protects prompt caching — see `references/architecture.md`.
+
+**State the expected answer** in parentheses after every question. This is how the
+model knows it has collected enough to move on.
+
+```text
+Ask Q1: "{Q1}"
+(You must receive a YES/NO answer.)
+
+If YES or EQUIVALENT INTENT, proceed to Q2.
+If NO or EQUIVALENT INTENT, invoke the end_call tool.
+
+Ask Q2: "{Q2}"
+(You must receive a valid U.S. state.)
+```
+
+**Branch keywords in ALL CAPS** — YES, NO, EQUIVALENT INTENT. Makes decision logic
+scannable when reviewing a long script.
+
+**Implicit questions.** The bot may ask anything mid-conversation, but only
+configured questions (`{Q1}`, `{Q2}`, …) have their answers stored as structured
+responses. If an answer needs to be captured downstream, it must be a configured
+question — not an inline `Ask: "..."`.
+
+## Standard Intro structure
+
+```text
+# Objective
+# Initial Ask Handling After Opening Sentence
+# Qualification Flow
+# Transfer            (if applicable — transfer_number, transfer_sentence)
+# Scheduling          (if applicable)
+# FAQs                (optional)
+# Rebuttal            (optional)
+```
+
+**Rebuttal** handles objections that block the goal: why am I being called, general
+hesitancy, wanting information before answering, skepticism. Acknowledge, answer
+briefly, steer back to the flow. Never argumentative, never more persistent than
+the script allows.
+
+## Standard Voice Prompt rule blocks
+
+Copy these into the Voice Prompt of essentially every script. Verbatim text is in
+`references/global-rules.md`.
+
+- **Transfer Rule (Priority)** — never transfer before every qualification question
+  is answered, and never because the caller says "hold" / "connect" / "put me
+  through."
+- **Callback Rule** — caller is busy, book a time within `{working_hours}`, never
+  in the past, then `end_call`.
+- **User Questions** — answer, then return to the exact question you left. Never
+  skip a question without an answer.
+- **Language Rule** — English by default unless the use case says otherwise.
+- **Company Info** — 2–3 paragraphs for answering questions about the business.
+  Include it even if you only have placeholder text to replace later.
+
+## Edge cases worth handling explicitly
+
+- Complete all questions before any transfer or scheduling.
+- Distinguish a human gatekeeper / AI assistant from voicemail — they need
+  different handling. Voicemail and IVR should `end_call` without speaking.
+- Wait patiently when someone says they're fetching the person.
+- Never say "end_call" out loud or narrate that the call is ending.
+
+## Inbound vs outbound
+
+Same flow, same logic, same rules. Clone the outbound Intro and change the opening
+sentence to reflect who called whom.
+
+```text
+Outbound: This is {bot_name} with {company_name} on a recorded line. I'm calling regarding...
+Inbound:  Thank you for calling {company_name}. This is {bot_name} on a recorded line. How can I help you today?
+```
+
+## References
+
+| File | Contents |
+| --- | --- |
+| `references/architecture.md` | Component responsibilities, what prompting can't reach, prompt caching |
+| `references/defaults.md` | Default config tables (call, audio, STT, TTS, LLM, turn detection) and default opening sentences |
+| `references/global-rules.md` | Verbatim Voice Prompt rule blocks to copy |
+| `references/ooo-and-callback.md` | Out of Office prompt and scheduled callback prompt templates |
+| `references/examples/` | Real production scripts, indexed in its README |
+
+Examples are real and in production, but predate parts of this guide — they may
+contain conventions this document now supersedes. Follow this document; use the
+examples for shape and phrasing.

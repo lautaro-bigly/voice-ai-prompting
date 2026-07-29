@@ -1,0 +1,17 @@
+# Windows / OneDrive
+Thumbs.db
+ehthumbs.db
+desktop.ini
+$RECYCLE.BIN/
+
+# macOS
+.DS_Store
+
+# Office / editor temp files
+~$*
+*.tmp
+*.bak
+*.swp
+
+# Local scratch — put work-in-progress drafts here to keep them out of git
+scratch/
