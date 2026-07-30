@@ -26,6 +26,28 @@ So "wait two seconds before answering", "ignore background noise", and "speak in
 soft, slow voice" are dead text. Fix those in the component config, not the prompt.
 See `references/architecture.md`.
 
+## Apply the config defaults
+
+The script is only half the deliverable. The component settings in
+`references/defaults.md` apply to every prompt and are never set automatically.
+
+On every prompt task, new or existing, read the prompt's current config through the
+platform MCP and compare it against `references/defaults.md`:
+
+- **Everything matches** — done. Ask nothing, write nothing, say nothing.
+- **Something differs** — never overwrite it silently. A different value may be
+  deliberate. List each difference (setting, current value, default) and ask whether
+  to apply the defaults. Apply only what the user approves — they may want to keep one
+  override and fix the rest. If they decline, drop it and don't ask again for that
+  prompt.
+
+`Maximum Call Duration` is a judgment call rather than a fixed value; count it as
+matching whenever it clears the 4-minute floor.
+
+After applying, report which values changed. If the MCP can't read or write the
+config, say so plainly and output the filled-in tables for the user to enter — never
+finish a prompt with the defaults silently unapplied.
+
 ## The two layers
 
 Every script is split across two places. Putting content in the wrong layer is the
