@@ -17,7 +17,7 @@ Voice AI prompt.
 
 | Setting                 | Default Value     |
 | ----------------------- | ----------------- |
-| Background Sound        | Call Center Noise |
+| Background Sound        | `CallCenterNoise` |
 | Background Sound Volume | 0.03              |
 
 ## Speech-to-Text (STT)
@@ -36,7 +36,7 @@ Voice AI prompt.
 | Voice    | Sierra - California Girl |
 | Language | English                  |
 | Speed    | 1                        |
-| Volume   | 1.3                      |
+| Volume   | 1                        |
 | Emotion  | Neutral                  |
 
 ## Large Language Model (LLM)
