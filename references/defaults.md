@@ -8,7 +8,7 @@ Voice AI prompt.
 | Setting               | Default Value                                                   |
 | --------------------- | --------------------------------------------------------------- |
 | Maximum Call Duration | Depends on the script length, but **never less than 4 minutes** |
-| Maximum Ringing Time  | 25 seconds                                                      |
+| Maximum Ringing Time  | 40 seconds                                                      |
 | AI Speak Duration     | 7 seconds                                                       |
 | Silence Timeout       | 30 seconds                                                      |
 | Allow Interruptions   | `true`                                                          |
