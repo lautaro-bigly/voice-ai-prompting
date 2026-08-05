@@ -67,8 +67,12 @@ yourself pasting the same rule into three Intros, it was a Voice Prompt rule.
 
 Check every script against these. They are not stylistic.
 
-- Both opening sentences — inbound **and** outbound — contain the exact phrase
-  **"on a recorded line."**
+- The exact phrase **"on a recorded line."** is spoken on the bot's first
+  substantive turn, on every flow — outbound, inbound, and callback. Note this is
+  usually *not* the configured First Outbound Sentence: that field is a fallback the
+  Intro overrides (see `references/defaults.md`), so an outbound script opening with a
+  bare `"Can I please speak to {name}?"` carries the disclosure on the next turn, in
+  the Intro's pitch. Inbound greets and discloses in one sentence.
 - At least **two questions**, even when one would do. This is a guard against the
   bot racing to a transfer on a single answer.
 - Every phone number is full U.S. E.164 with the `+1` prefix: `+17076412107`.
@@ -166,10 +170,16 @@ Copy these into the Voice Prompt of essentially every script. Verbatim text is i
 Same flow, same logic, same rules. Clone the outbound Intro and change the opening
 sentence to reflect who called whom.
 
+These are **Intro** openings, not the fallback sentences in the Voice Prompt
+Configuration:
+
 ```text
 Outbound: This is {bot_name} with {company_name} on a recorded line. I'm calling regarding...
 Inbound:  Thank you for calling {company_name}. This is {bot_name} on a recorded line. How can I help you today?
 ```
+
+On outbound, the disclosure lands here rather than in the configured first sentence,
+which is typically just an identity check (`"Can I please speak to {name}?"`).
 
 ## References
 

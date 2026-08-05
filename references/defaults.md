@@ -83,3 +83,8 @@ from the prompt's Intro section. Configure them as follows.
 These serve as **fallbacks**. At execution time they are overridden by the opening
 sentences defined in the prompt's Inbound Intro or Outbound Intro sections. Leave
 them unchanged unless there is a specific technical requirement to modify them.
+
+Note these defaults carry no recording disclosure, and that is correct — the
+outbound fallback is a bare identity check, and the **"on a recorded line."**
+requirement is satisfied by the Intro on the bot's first substantive turn. Don't
+"fix" these sentences by adding the phrase here; verify it in the Intro instead.
