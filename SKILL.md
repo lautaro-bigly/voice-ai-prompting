@@ -20,11 +20,21 @@ and **only** the LLM. Instructions aimed at the other three silently do nothing:
 | Conversation flow, questions, business logic, wording | LLM | Yes |
 | When the bot decides the caller stopped talking, response delay | Turn detection (LiveKit) | No |
 | Ignoring background noise, transcription accuracy | STT (Parakeet) | No |
-| Voice, tone, pacing, speaking softly/slowly, pronunciation | TTS (Cartesia) | No |
+| Voice, tone, pacing, speaking softly/slowly | TTS (Cartesia) | No |
+| How a given word comes out | TTS (Cartesia) | Only by respelling it |
 
 So "wait two seconds before answering", "ignore background noise", and "speak in a
 soft, slow voice" are dead text. Fix those in the component config, not the prompt.
-See `references/architecture.md`.
+
+**The boundary is over the component, not its input or output.** The prompt can't
+change how TTS renders a string, but it fully controls *which* string TTS receives —
+so pronunciation is reachable by respelling. `"Never output digits; write numbers as
+words"` is a legitimate prompt rule, because "fifty" and "50" are different input.
+Likewise the prompt can't improve transcription accuracy, but it can tell the LLM how
+much to trust a transcript: STT mangles proper nouns, so `"do not trust names in the
+transcript; branch on intent only"` works where `"transcribe names accurately"` is
+dead text. Rewrite an unreachable instruction as one about text the LLM produces or
+consumes. See `references/architecture.md`.
 
 ## From a request to a script
 
