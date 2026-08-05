@@ -26,6 +26,53 @@ So "wait two seconds before answering", "ignore background noise", and "speak in
 soft, slow voice" are dead text. Fix those in the component config, not the prompt.
 See `references/architecture.md`.
 
+## From a request to a script
+
+This skill is normally used alongside a connected Bigly platform MCP — one connection
+per tenant. The job is to turn a plain request ("we want to call our aged leads and
+transfer the interested ones") into the full set of prompts and config that the
+platform needs, and write them through that connection.
+
+**Ask only for what you cannot derive.** These nine things have no default, and a
+script is not buildable without them:
+
+1. Company name, and 2–3 sentences on what the business does (becomes `# Company Info`).
+2. Bot name.
+3. Goal — qualify → transfer, qualify → schedule, or both.
+4. The qualification questions, with the answer each must produce.
+5. What disqualifies someone, and what the bot says when they don't qualify.
+6. Transfer destination number — transfer flows only.
+7. Business hours and time zone.
+8. Inbound, outbound, or both.
+9. Language, if not English-only.
+
+**Derive everything else — don't ask.** Every setting in `references/defaults.md`;
+every rule block in `references/global-rules.md`; the section layout; the default
+pricing rule; E.164 reformatting of any number given loosely (`707-641-2107` →
+`+17076412107`); and the fact that an OOO prompt and a callback Intro are required at
+all. Asking about these wastes the user's turn on a decision the skill already made.
+
+**Confirm before writing, never assume:** the transfer number read back digit by
+digit, and each disqualification branch. A wrong transfer number routes live callers
+to a stranger, and a wrong disqualification hangs up on good leads — neither is
+recoverable after the fact.
+
+**Then build, in this order.** Each step depends on the one before it:
+
+1. Questions first, with their expected answers — the flow's branches are written
+   against them.
+2. Outbound Intro — objective, pickup handling, qualification flow, transfer or
+   scheduling, rebuttals.
+3. Voice Prompt — persona, tools, and the standard rule blocks.
+4. Inbound Intro, if in scope — clone step 2, change who called whom.
+5. Callback Intro — clone step 2, acknowledge the requested callback.
+6. OOO prompt — unless the script only schedules.
+7. Config, per the next section.
+
+Run the hard-requirements list below against the result before calling it done. If the
+MCP is unavailable, produce the same artifacts as text for the user to paste — the
+deliverable is identical either way.
+
 ## Apply the config defaults
 
 The script is only half the deliverable. The component settings in
