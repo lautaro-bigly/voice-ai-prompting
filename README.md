@@ -30,6 +30,7 @@ To pick up changes: `git pull` in that directory.
 
 ```
 SKILL.md                              core conventions — loaded whenever the skill triggers
+GAPS.md                               what the skill does not yet document (contributor doc)
 references/
   platform-mcp.md                     MCP tool surface, write handshake, intro tags
   architecture.md                     component responsibilities, prompting limits, caching
