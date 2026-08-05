@@ -29,14 +29,16 @@ OOO is for **inbound calls outside business hours only**.
 - Configure only the **Inbound** section (`content_inbound`, `first_inbound_sentence`).
 - Set `tag` to `after_office_hours`.
 
-The inbound opening sentence must clearly say the office is closed:
+The inbound opening sentence must clearly say the office is closed, and — like every
+other flow — must carry the recording disclosure:
 
 ```text
-Thanks for calling {company_name}. This is {bot_name}. Our office is currently closed, but you can reach us during our regular business hours, and we'll be happy to assist you.
+Thanks for calling {company_name}. This is {bot_name} on a recorded line. Our office is currently closed, but you can reach us during our regular business hours, and we'll be happy to assist you.
 ```
 
-Wording can vary, but it must always tell the caller the office is closed and
-invite them to call back during business hours.
+Wording can vary, but it must always tell the caller the office is closed, invite
+them to call back during business hours, and include **"on a recorded line."** An
+after-hours call is recorded like any other, so the disclosure is not optional here.
 
 ### Default OOO body
 
