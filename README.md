@@ -35,6 +35,7 @@ references/
   architecture.md                     component responsibilities, prompting limits, caching
   defaults.md                         default config tables and opening sentences
   global-rules.md                     verbatim Voice Prompt rule blocks
+  variables.md                        standard {} variable set and injection points
   ooo-and-callback.md                 Out of Office and scheduled callback templates
   examples/                           real production scripts, indexed in README.md
 ```

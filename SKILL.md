@@ -143,7 +143,9 @@ Check every script against these. They are not stylistic.
 - Scheduling scripts must **not** list `transfer_call` at all, and must state
   explicitly that transfers are not available. `prompt_type` must be
   `meeting_scheduler`, not `transfer_call` — the enum has to agree with the script.
-- Prompt Variables define at minimum Bot Name, Goal, Company Name.
+- Company variables define at minimum `bot_name`, `what_is_your_goal`, `company_name` —
+  and none of the ones the script relies on may be left empty. See
+  `references/variables.md`.
 - Default pricing rule, unless the use case overrides it:
   `You can't discuss the price, only a licensed agent can do so.`
 - An Out of Office Intro exists, tagged `after_office_hours` — except for scheduling
@@ -159,9 +161,10 @@ Check every script against these. They are not stylistic.
 #Qualification Flow`). Sections make the prompt modular — a block can be reordered
 or swapped without touching the rest.
 
-**Variables.** `{}` is a real runtime injection: `{first_name}`, `{Q1}`, `{date}`,
+**Variables.** `{}` is a real runtime injection: `{name}`, `{Q1}`, `{date}`,
 `{working_hours}`. `[]` is a reference for the LLM, not an injection:
-`"Hello [user first name]"` tells the model to look up a value it already has.
+`"Hello [user first name]"` tells the model to look up a value it already has. For
+the standard set and which layer injects each, see `references/variables.md`.
 
 **Inject each contact attribute once.** Questions used once (`{Q1}`) can be
 injected inline. Contact attributes go in a single `# User Personal Information`
@@ -258,6 +261,7 @@ which is typically just an identity check (`"Can I please speak to {name}?"`).
 | `references/architecture.md` | Component responsibilities, what prompting can't reach, prompt caching |
 | `references/defaults.md` | Default config tables (call, audio, STT, TTS, LLM, turn detection) and default opening sentences |
 | `references/global-rules.md` | Verbatim Voice Prompt rule blocks to copy |
+| `references/variables.md` | The standard `{}` variable set, and which layer injects each |
 | `references/ooo-and-callback.md` | Out of Office prompt and scheduled callback prompt templates |
 | `references/examples/` | Real production scripts, indexed in its README |
 
