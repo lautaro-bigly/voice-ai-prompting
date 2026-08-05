@@ -57,17 +57,30 @@ digit, and each disqualification branch. A wrong transfer number routes live cal
 to a stranger, and a wrong disqualification hangs up on good leads — neither is
 recoverable after the fact.
 
+**Read before you write.** On an existing account, `tenant_ai_voice_prompt` (read),
+`tenant_ai_intros` (list), and `tenant_ai_company_variables` (read) tell you what is
+already there — including variables sitting empty and Intros you'd otherwise duplicate.
+
 **Then build, in this order.** Each step depends on the one before it:
 
-1. Questions first, with their expected answers — the flow's branches are written
-   against them.
+1. Questions first, with `attribute_type` and `instruction` — the flow's branches are
+   written against them.
 2. Outbound Intro — objective, pickup handling, qualification flow, transfer or
    scheduling, rebuttals.
 3. Voice Prompt — persona, tools, and the standard rule blocks.
 4. Inbound Intro, if in scope — clone step 2, change who called whom.
-5. Callback Intro — clone step 2, acknowledge the requested callback.
-6. OOO prompt — unless the script only schedules.
+5. Callback Intro — clone step 2, acknowledge the requested callback. Tag
+   `SCHEDULED_CALLBACK`.
+6. OOO prompt — unless the script only schedules. Tag `after_office_hours`.
 7. Config, per the next section.
+8. `tenant_ai_call_context_preview` — assemble the real prompt without dialing, and
+   confirm every `{variable}` resolved instead of reaching the LLM as literal braces.
+
+**Every write is `read` → `preview_update` → `apply_update` with a per-tool
+confirmation string.** Show the preview diff before applying: this is a live tenant, and
+an applied change affects calls placed minutes later. On `tenant_ai_intros`,
+`apply_update` without an `id` creates a new Intro instead of updating one. Details and
+the confirmation strings are in `references/platform-mcp.md`.
 
 Run the hard-requirements list below against the result before calling it done. If the
 MCP is unavailable, produce the same artifacts as text for the user to paste — the
@@ -78,8 +91,10 @@ deliverable is identical either way.
 The script is only half the deliverable. The component settings in
 `references/defaults.md` apply to every prompt and are never set automatically.
 
-On every prompt task, new or existing, read the prompt's current config through the
-platform MCP and compare it against `references/defaults.md`:
+On every prompt task, new or existing, read the current config with
+`tenant_ai_voice_prompt` action `read` and compare it against `references/defaults.md`,
+which lists the MCP field name for each setting. (`tenant_ai_settings` is *not* this —
+it holds tenant plumbing like SIP and DNC thresholds.) Then:
 
 - **Everything matches** — done. Ask nothing, write nothing, say nothing.
 - **Something differs** — never overwrite it silently. A different value may be
@@ -126,13 +141,17 @@ Check every script against these. They are not stylistic.
 - Every tool the flow needs is listed in the Voice Prompt. A transfer flow without
   `transfer_call` listed fails silently.
 - Scheduling scripts must **not** list `transfer_call` at all, and must state
-  explicitly that transfers are not available.
+  explicitly that transfers are not available. `prompt_type` must be
+  `meeting_scheduler`, not `transfer_call` — the enum has to agree with the script.
 - Prompt Variables define at minimum Bot Name, Goal, Company Name.
 - Default pricing rule, unless the use case overrides it:
   `You can't discuss the price, only a licensed agent can do so.`
-- An Out of Office prompt exists — except for scheduling scripts, where business
-  hours are irrelevant.
-- A scheduled callback Intro exists.
+- An Out of Office Intro exists, tagged `after_office_hours` — except for scheduling
+  scripts, where business hours are irrelevant.
+- A scheduled callback Intro exists, tagged `SCHEDULED_CALLBACK`.
+- Every question whose answer is needed later has an `attribute_type` and an
+  `attribute_name`. Both are optional to the platform, so omitting them silently
+  discards the answer rather than erroring.
 
 ## Writing conventions
 
@@ -150,7 +169,10 @@ section near the end and are referenced with `[]` elsewhere. Besides being clean
 this protects prompt caching — see `references/architecture.md`.
 
 **State the expected answer** in parentheses after every question. This is how the
-model knows it has collected enough to move on.
+model knows it has collected enough to move on. It also belongs in the question's
+`instruction` field, which is where the platform stores the authoritative rule and where
+any normalization (map to an enum, emit ISO 8601) has to go — the parenthetical in the
+body is the readable echo of it. Set both; see `references/platform-mcp.md`.
 
 ```text
 Ask Q1: "{Q1}"
@@ -232,6 +254,7 @@ which is typically just an identity check (`"Can I please speak to {name}?"`).
 
 | File | Contents |
 | --- | --- |
+| `references/platform-mcp.md` | The MCP tool surface, the write handshake, Intro tags, question fields |
 | `references/architecture.md` | Component responsibilities, what prompting can't reach, prompt caching |
 | `references/defaults.md` | Default config tables (call, audio, STT, TTS, LLM, turn detection) and default opening sentences |
 | `references/global-rules.md` | Verbatim Voice Prompt rule blocks to copy |

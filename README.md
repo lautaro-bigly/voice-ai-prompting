@@ -31,6 +31,7 @@ To pick up changes: `git pull` in that directory.
 ```
 SKILL.md                              core conventions — loaded whenever the skill triggers
 references/
+  platform-mcp.md                     MCP tool surface, write handshake, intro tags
   architecture.md                     component responsibilities, prompting limits, caching
   defaults.md                         default config tables and opening sentences
   global-rules.md                     verbatim Voice Prompt rule blocks

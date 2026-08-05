@@ -1,5 +1,20 @@
 # Out of Office and Scheduled Callback Prompts
 
+Neither of these is a separate feature. **Both are ordinary Intros distinguished by
+their `tag` field**, which the platform matches against the contact's latest tag:
+
+| Prompt | Intro `tag` |
+| --- | --- |
+| Out of Office | `after_office_hours` |
+| Scheduled callback | `SCHEDULED_CALLBACK` |
+| Main script | `null` |
+
+So "create an OOO prompt" means creating an Intro tagged `after_office_hours` via
+`tenant_ai_intros`. Everything that applies to an Intro — the two content fields, the
+opening sentences, the questions array — applies to these too. See `platform-mcp.md`
+for the full tag list, which includes cases this file doesn't cover
+(`TRANSFERRED_DROPPED`, `MEETING_BOOKED`, `SMS_CALLBACK`).
+
 ## Out of Office (OOO)
 
 Configure an OOO prompt for **almost every script**. The exception is **scheduling**
@@ -10,8 +25,9 @@ business hours are irrelevant and no OOO prompt is needed.
 
 OOO is for **inbound calls outside business hours only**.
 
-- Leave the **Outbound** section empty.
-- Configure only the **Inbound** section.
+- Leave the **Outbound** section empty (`content_outbound`, `first_outbound_sentence`).
+- Configure only the **Inbound** section (`content_inbound`, `first_inbound_sentence`).
+- Set `tag` to `after_office_hours`.
 
 The inbound opening sentence must clearly say the office is closed:
 
@@ -67,11 +83,20 @@ Example opening:
 Hi, this is {bot_name} with {company_name} on a recorded line. You requested that we call you back...
 ```
 
+Set `tag` to `SCHEDULED_CALLBACK`.
+
 ### Placement of the callback pitch
 
-The **Second Outbound Sentence** in the Voice Prompt Configuration is optional and
-usually left empty. Because of that, the callback-specific introduction is normally
-placed directly in the **Intro** prompt rather than in the configuration.
+Two different fields share almost the same name, and the distinction decides where this
+goes:
+
+- `outbound_second_message` — Voice Prompt level, a global fallback. Normally left null.
+- `second_outbound_sentence` — **Intro** level. This is where the pitch goes.
+
+Because the Voice Prompt fallback stays empty, the callback-specific introduction is
+placed on the Intro. In production the outbound pitch — including the recording
+disclosure — is carried by the Intro's `second_outbound_sentence`, with
+`first_outbound_sentence` doing nothing but asking for the contact by name.
 
 When cloning, review **both** the opening sentence and the body of the Intro — any
 wording that references why you're calling needs to acknowledge the previously
