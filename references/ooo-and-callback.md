@@ -1,4 +1,4 @@
-# Out of Office and Scheduled Callback Prompts
+# Out of Office and Scheduled Callback Prompts (only used for live transfer campaigns)
 
 Neither of these is a separate feature. **Both are ordinary Intros distinguished by
 their `tag` field**, which the platform matches against the contact's latest tag:
@@ -21,9 +21,9 @@ Configure an OOO prompt for **almost every script**. The exception is **scheduli
 scripts: they book appointments rather than transferring to a live call center, so
 business hours are irrelevant and no OOO prompt is needed.
 
-### Configuration
+### Configuration 
 
-OOO is for **inbound calls outside business hours only**.
+OOO is for **inbound calls outside business hours only**. (why don't we qualify and only then "callcenter is closed")
 
 - Leave the **Outbound** section empty (`content_outbound`, `first_outbound_sentence`).
 - Configure only the **Inbound** section (`content_inbound`, `first_inbound_sentence`).
