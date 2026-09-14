@@ -256,7 +256,7 @@ These are **Intro** openings, not the fallback sentences in the Voice Prompt
 Configuration:
 
 ```text
-Outbound: This is {bot_name} with {company_name} on a recorded line. I'm calling regarding...
+Outbound: "This is {bot_name} with {company_name} on a recorded line"... Then add value proposition and verify their interest. Value proposition and interest verification should be one short sentence.
 Inbound:  Thank you for calling {company_name}. This is {bot_name} on a recorded line. How can I help you today?
 ```
 
