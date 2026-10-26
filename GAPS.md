@@ -109,6 +109,11 @@ appointment with no booking tool; post-call processing is believed to tag the co
 tenant (2026-10-26). If appointments don't land, revisit `prompt_type`
 (`meeting_scheduler`?) and the tool list in `ooo-and-callback.md` and `SKILL.md`.
 
+**Audit reminder cadence** — [decision] · The skill can't count runs, so the "audit
+this tenant" reminder fires once per conversation, after the first write. A real "every
+N runs" would need the MCP to count writes per tenant and return a hint for the skill
+to relay.
+
 **Call caps and dialing filters** — [undocumented] · `max_ai_call_per_day` / `_week` /
 `_month`, `verify_number_before_call` (blocks landlines), `allowed_zip_codes`,
 `default_zip_code`.

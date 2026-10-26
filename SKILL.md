@@ -156,6 +156,38 @@ After applying, report which values changed. If the MCP can't read or write the
 config, say so plainly and output the filled-in tables for the user to enter — never
 finish a prompt with the recommended settings silently unapplied.
 
+## Check what's missing
+
+On every task that touches an existing Voice Prompt or Intro, check the part you're
+touching for the required rules while you read it. Look for what each block **does**,
+not its heading — `#Callback Rule`, `Calling back instructions` and `[CALLBACK]` are all
+the Callback Rule if they do its job:
+
+| Required | Present if something in the prompt… |
+| --- | --- |
+| Callback Rule | books a busy caller a time within working hours, then `end_call` |
+| AI Assistant / Call Screener | says what to do when a screening assistant answers |
+| Transfer Rule | blocks a transfer before every question is answered, and on "put me through" — transfer flows |
+| General Rule | injects the company variables, `{name}` and `{date}` in one block at the end |
+| `{intro}` | appears exactly once |
+| Tools | lists `transfer_call` — transfer flows |
+| OOO and callback Intros | exist, tagged `after_office_hours` and `SCHEDULED_CALLBACK` — transfer flows |
+
+- **Missing** — suggest adding the standard block from `references/global-rules.md`.
+- **Present under another name or wording** — not missing. If it differs from the
+  standard block, suggest replacing it and say what differs.
+- **Never add or replace without approval.** These are suggestions, like the
+  recommended settings.
+
+This is not a full audit. Wording, conventions and leftover rules are reviewed only when
+the user asks to audit the tenant, or on a tenant's first onboarding: then run the whole
+Hard requirements list and the recommended settings against every prompt and Intro.
+
+**Remind about the audit** once per conversation, at the end of the first task that
+wrote a change: `Tip: run a full audit of this tenant once in a while — ask me to "audit
+this tenant".` If the check above found something missing, say so in the same line. Not
+on read-only questions, and not twice.
+
 ## The two layers
 
 Every script is split across two places. Putting content in the wrong layer is the
