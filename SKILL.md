@@ -204,6 +204,10 @@ Check every script against these. They are not stylistic.
 - The Voice Prompt carries one of the two `# AI Assistant / Call Screener` setups from
   `references/global-rules.md`, verbatim. The `end_call` tool description is left as
   deployed; the block alone decides the behaviour.
+- No Intro section claims priority over the Voice Prompt (`Transfer On Yes (Priority, overrides ...)`).
+  The screener block and the Transfer Rule win, and an offer question ("Want me to grab our
+  specialist?") waits for the answer: `transfer_call` is never invoked in the same turn as a
+  question. A screener's reply to the offer is not a Yes.
 - `transfer_call` is listed in the Voice Prompt and invoked only in Intros. A Voice
   Prompt that invokes it is wrong whatever the number — see The two layers.
 - Every `end_call` that says goodbye passes the line as its `end_sentence` parameter.

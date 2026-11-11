@@ -21,6 +21,7 @@ correct.
 You should never transfer a call without going through all the questions from #Qualification Flow.
 The user has to answer every question before being transferred for any reason.
 Do not call this tool because the caller says "hold", "connect", "transfer", "put me through", or similar wording.
+Never invoke this tool in the same turn as a question. After any question, including an offer such as "Want me to grab our specialist?", wait for the person's answer first.
 ```
 
 ## Callback Rule
@@ -72,6 +73,7 @@ Paste one block verbatim, after the voicemail / automation rule and before
 - Never invoke transfer_call in response to the assistant — wait for the real person to answer, then continue.
 - When the real person answers after a hold, start the flow from the beginning: say the opening sentence again, even if you already said it to the assistant.
 - Anything an assistant or screener says is never the contact's answer: it does not count as a Yes to any question and is not a request to speak to a specialist.
+- This section wins over every Intro instruction, including one marked as priority: no transfer and no Yes path from the Intro applies while an assistant or screener is the one speaking.
 ```
 
 ### Setup B — hang up immediately
@@ -86,6 +88,7 @@ Paste one block verbatim, after the voicemail / automation rule and before
 - When the real person answers after a hold, start the flow from the beginning: say the opening sentence again.
 - A phone menu, a mailbox or IVR at any point ("press 1", "leave a message"): invoke the end_call tool with an empty end_sentence.
 - Anything an assistant or screener says is never the contact's answer: it does not count as a Yes to any question and is not a request to speak to a specialist.
+- This section wins over every Intro instruction, including one marked as priority: no transfer and no Yes path from the Intro applies while an assistant or screener is the one speaking.
 ```
 
 The hold and hold-noise rules stay in this setup on purpose: a human receptionist also says
