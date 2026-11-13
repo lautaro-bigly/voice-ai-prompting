@@ -26,10 +26,41 @@ continue the conversation.` and the voice model carries on without reading it al
 delegation model decides *what* and does it. So every S2S Intro is two prompts that must
 agree: the Intro body and its delegation prompt.
 
-OpenAI's prompting guide for the voice model:
-https://developers.openai.com/api/docs/guides/live-prompting — the `Backchannel policy`,
-`Interruption policy` and `Delegation policy` labels and the `<|SpawnThinking|>` token
-come from it and are kept exactly.
+## Check every S2S prompt against OpenAI's guide
+
+OpenAI's prompting guide for the voice model is the source for how these prompts are
+written — the `Backchannel policy`, `Interruption policy` and `Delegation policy` labels
+and the `<|SpawnThinking|>` token come from it and are kept exactly:
+
+https://developers.openai.com/api/docs/guides/live-prompting
+(`https://developers.openai.com/api/docs/guides/live-prompting.md` is the plain-text
+version, with the starter template verbatim.)
+
+**Fetch it on every S2S writing task** — a new Intro, a conversion, an edit to an Intro
+body or a delegation prompt — before showing the user a preview. The page changes and
+this file is a snapshot, so do not rely on memory of it. Then check the draft against
+it:
+
+- The three policy labels and the two `<|SpawnThinking|>` condition headings are present
+  and spelled as the guide spells them.
+- Backend work is requested with `<|SpawnThinking|>`, never with "delegate to the
+  backend" or a spoken promise like "let me check that".
+- Trigger conditions are concrete, on both the generate and the do-not-generate side.
+- The Intro never states a price, a booking, a transfer or any action as done before the
+  backend returns.
+- The full task procedure is in the delegation prompt, not the voice prompt.
+- Anything else the guide now recommends or warns against that the draft doesn't follow.
+
+Report the result in one or two lines with the preview: what was checked, and anything
+changed because of it. Two cases need more than that:
+
+- **The guide contradicts this file or the templates** — tell the user what differs and
+  ask which to follow; do not silently pick one. The Bigly rules in Non-negotiables
+  (always the tool row's default, `{intro}`-only Voice Prompt, a delegation prompt per
+  Intro, no appointment tool) are platform facts the guide knows nothing about, and they
+  stand.
+- **The page can't be fetched** — say so plainly, build from the templates, and note that
+  the check was skipped.
 
 ## What changes from cascade
 
@@ -209,7 +240,8 @@ Transfer number and each disqualification are still read back before writing.
    differences table.
 4. Check both bodies: no `invoke`, `delegate` or `say nothing`; `<|SpawnThinking|>`
    present; every tool name present; only valid placeholders.
-5. Delegation prompt from the template.
+5. Delegation prompt from the template. Then fetch OpenAI's guide and check both bodies
+   and the delegation prompt against it (Check every S2S prompt against OpenAI's guide).
 6. One `tenant_ai_intros_update` preview with bodies, opening sentences, questions,
    `voice_engine` and the full `speech_to_speech_settings`. No `id` creates the Intro.
 7. Tool rows aligned to "always the default".

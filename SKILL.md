@@ -38,6 +38,9 @@ conventions to an S2S Intro, or the reverse. The short version:
 - Tone, pace and interruption instructions work on S2S. They are not dead text there.
 - "Take Intro A and do it as S2S" creates a **new** Intro with the rewritten body and its
   delegation prompt, and leaves A untouched.
+- Every time an S2S prompt is written or edited, fetch OpenAI's GPT Live prompting guide
+  (https://developers.openai.com/api/docs/guides/live-prompting) and check the draft
+  against it before showing a preview. Say what the check found.
 - S2S settings are in `references/defaults.md`, Speech to Speech.
 
 ## Know what the prompt can actually control
