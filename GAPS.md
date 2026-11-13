@@ -56,12 +56,15 @@ fails, no agent picks up, or the destination is busy. The existence of a
 `TRANSFERRED_DROPPED` intro tag implies the platform has a defined path for at least one
 of these. Undocumented, and it's the failure mode with a real person on the line.
 
-**Attaching a Voice Prompt to an Intro** — [unknown] · A tenant holds several Voice
+**Attaching a Voice Prompt to an Intro** — [undocumented] · A tenant holds several Voice
 Prompts, and an S2S Intro runs under its own `{intro}`-only one next to the cascade
-prompt. The MCP can create it (`save_prompt`) but shows no field that selects a saved
-prompt for an Intro or campaign, so `speech-to-speech.md` hands that step to the user.
-If the MCP gains the field, the skill should set it and verify with the call-context
-preview.
+prompt. Which prompt an Intro uses is picked in the app, on the Intro, next to the phone
+number and tag. The MCP can create the prompt (`save_prompt`) but cannot read or set
+that selection — checked 2026-11-13: it is absent from the Intro read, and
+`tenant_ai_intros_update` rejects `voice_prompt_id` and similar names as not
+allowlisted. So `speech-to-speech.md` hands the step to the user. Unknown: whether the
+call-context preview follows the selection. If the MCP gains the field, the skill should
+set it and verify with the preview.
 
 **OOO on S2S** — [unverified] · `speech-to-speech.md` writes the OOO Intro of an S2S flow
 as S2S with its own delegation prompt. No production OOO Intro on S2S has been checked.

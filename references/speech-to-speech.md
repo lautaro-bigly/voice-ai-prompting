@@ -129,11 +129,14 @@ fits:
    `inbound_prompt` `{intro}`. Show the user what will be saved first. The active cascade
    prompt is left exactly as it is.
 
-Then tell the user which Voice Prompt the S2S Intro has to run with, by name. The MCP can
-save a Voice Prompt but exposes no field that attaches one to an Intro, so selecting it
-is the user's step in the app (`GAPS.md`). Until it is selected,
-`tenant_ai_call_context_preview` shows the Intro wrapped in the cascade prompt — say so
-rather than reporting the preview as clean.
+Then tell the user which Voice Prompt the S2S Intro has to run with, by name, and where
+to pick it: **in the app, on the Intro itself — the Voice Prompt selector next to the
+phone number and tag.** That selection is the user's step. The MCP can save a Voice
+Prompt but cannot read or set which one an Intro uses (`tenant_ai_intros_update` rejects
+any such field as not allowlisted), so never claim it was attached. It is also unknown
+whether `tenant_ai_call_context_preview` follows the Intro's selection or only the
+active prompt: if the preview shows the Intro wrapped in cascade text, say so and ask
+the user to confirm the selection in the app rather than reporting the preview as clean.
 
 Only when the tenant has no cascade Intro at all is it worth offering to make `{intro}`
 the active prompt instead. Ask; never do it on your own.
