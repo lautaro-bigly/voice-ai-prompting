@@ -284,6 +284,14 @@ Check every script against these. They are not stylistic.
 - Every question asks for one thing. No option lists, no appended reasons, no two
   questions in one sentence — callers answer the first half and talk over the rest.
   See Writing conventions.
+- **There is no appointment tool, on either engine.** The bot agrees a day and time with
+  the caller and ends the call with `end_call`. After the call, a separate layer reads
+  the transcript, tags the call `MEETING_BOOKED` and puts the appointment on the
+  tenant's AI calendar. Never list, invoke or invent a booking tool — no
+  `meeting_scheduler`, `book_meeting` or `schedule_appointment` in a tool list, an Intro
+  or a delegation prompt. `meeting_scheduler` exists only as a `prompt_type` value, a
+  config setting, never a tool name. Because the transcript is all that layer sees, the
+  day and time must be said out loud and agreed in the conversation.
 - Scheduling scripts must **not** list `transfer_call` at all, and must state
   explicitly that transfers are not available. `prompt_type` must be
   `meeting_scheduler`, not `transfer_call` — the enum has to agree with the script.

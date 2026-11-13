@@ -154,6 +154,15 @@ Written from the template in `s2s-templates.md`, set through `tenant_ai_intros_u
 - Inbound and outbound share one delegation prompt, so direction-specific endings are
   labelled (`Outbound: voicemail…`, `Inbound: a sales call`).
 
+**Appointments and callbacks have no tool.** When the caller agrees a day and time, the
+delegation prompt calls `end_call` with the default sentence and nothing else. A layer
+that runs after the call reads the transcript, tags it `MEETING_BOOKED` (or schedules the
+callback) and sends an appointment to the calendar. So never write a booking tool into
+the delegation prompt or the Intro. The `Meeting booking` / `Callback booking` line under
+`Backend tools:` in the Intro describes that outcome so the voice model hands off at the
+right moment; it is not a tool name. The day and time must be spoken and agreed in the
+call, since the transcript is all that layer sees.
+
 Any later edit that changes when the call ends, transfers or texts is two edits — the
 Intro body and the delegation prompt — in the same preview.
 

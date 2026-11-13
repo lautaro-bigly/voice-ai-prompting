@@ -167,7 +167,9 @@ Precedence: # Absolute Rules, then the Delegation policy, then the call flow, th
 
 `{working_hours}` and the `# Transfer` sections appear on transfer flows only; a
 scheduling Intro replaces `# Transfer` with `# Scheduling` and lists a "Meeting booking"
-line under `Backend tools:`.
+line under `Backend tools:`. That line and "Callback booking" are not tools — there is no
+appointment tool. The delegation prompt answers both with `end_call`; the booking happens
+after the call, from the transcript.
 
 ## 2. The `# Voice and Energy` block (required)
 

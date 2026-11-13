@@ -33,9 +33,11 @@ The OOO Intro never tells the caller the office is closed, never asks them to ca
 and never offers a callback. An appointment is not a callback — the Callback Rule in the
 Voice Prompt is for a caller who is busy, and still applies here on its own terms.
 
-There is no booking tool. The bot offers the appointment and confirms a day and time;
-post-call processing tags the contact `MEETING_BOOKED` and puts the appointment on the
-tenant's AI calendar. See `GAPS.md` — this is unverified on a `transfer_call` tenant.
+There is no booking tool — not here, not on any script, not on either engine. The bot
+offers the appointment and agrees a day and time; after the call a separate layer reads
+the transcript, tags the call `MEETING_BOOKED` and puts the appointment on the tenant's
+AI calendar. Never add a tool for it. Whether it also works with `prompt_type` left at
+`transfer_call` is the one open point — see `GAPS.md`.
 
 ### Calendar prerequisite — the user's job
 

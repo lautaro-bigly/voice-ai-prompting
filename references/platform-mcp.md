@@ -158,6 +158,11 @@ This is the platform-level counterpart to the transfer-vs-scheduling split in
 `SKILL.md` — set it to match the script, and on `meeting_scheduler` keep `transfer_call`
 out of the tool list entirely.
 
+`meeting_scheduler` is only this setting. It is not a tool, and no appointment tool
+exists: the bot agrees a day and time and ends the call, and a post-call layer reads the
+transcript, tags the call `MEETING_BOOKED` and sends it to the AI calendar. The same on
+cascade and S2S.
+
 ## Configurable tool overrides
 
 `tenant_ai_tools_configuration` covers exactly two tools:
