@@ -56,6 +56,20 @@ fails, no agent picks up, or the destination is busy. The existence of a
 `TRANSFERRED_DROPPED` intro tag implies the platform has a defined path for at least one
 of these. Undocumented, and it's the failure mode with a real person on the line.
 
+**Attaching a Voice Prompt to an Intro** — [unknown] · A tenant holds several Voice
+Prompts, and an S2S Intro runs under its own `{intro}`-only one next to the cascade
+prompt. The MCP can create it (`save_prompt`) but shows no field that selects a saved
+prompt for an Intro or campaign, so `speech-to-speech.md` hands that step to the user.
+If the MCP gains the field, the skill should set it and verify with the call-context
+preview.
+
+**OOO on S2S** — [unverified] · `speech-to-speech.md` writes the OOO Intro of an S2S flow
+as S2S with its own delegation prompt. No production OOO Intro on S2S has been checked.
+
+**No S2S example** — [decision] · `references/examples/` has no S2S script. The templates
+in `s2s-templates.md` came from production builds, but an anonymized Intro plus its
+delegation prompt would show how the two line up.
+
 ---
 
 ## Undocumented platform surface

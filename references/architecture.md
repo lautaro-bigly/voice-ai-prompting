@@ -27,6 +27,11 @@ responsibility:
 
 Understanding this separation is essential when writing prompts.
 
+This is the **cascade** engine. An Intro set to speech to speech replaces STT, LLM and
+TTS with one model that hears and speaks directly, so tone, pace and interruption
+instructions do reach it, and tool calls go to a separate delegation model. Nothing
+below about dead text applies to those Intros — see `speech-to-speech.md`.
+
 ## What the prompt cannot do
 
 The LLM controls the conversation and nothing else. Instructions aimed at another

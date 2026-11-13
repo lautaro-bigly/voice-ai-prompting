@@ -13,5 +13,8 @@ $RECYCLE.BIN/
 *.bak
 *.swp
 
+# Temporary source material for the S2S references — not part of the skill
+S2S Setup Guide/
+
 # Local scratch — put work-in-progress drafts here to keep them out of git
 scratch/

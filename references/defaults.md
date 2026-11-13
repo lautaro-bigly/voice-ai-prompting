@@ -93,6 +93,29 @@ deliberate decision, not a default.
 here; a live tenant runs `0.5`. Treat it as matching whatever is already set rather
 than changing it, and flag it if a turn-detection problem is being investigated.
 
+## Speech to Speech
+
+For an Intro whose `voice_engine` is `speech_to_speech`. These live on the **Intro**
+(`tenant_ai_intros`, inside `speech_to_speech_settings`), not on the Voice Prompt, and
+replace the STT, TTS, LLM and turn detection tables above, which an S2S Intro ignores.
+Call settings and background audio still apply.
+
+| Setting             | Key in `speech_to_speech_settings` | Default Value |
+| ------------------- | ---------------------------------- | ------------- |
+| Provider            | `provider`                         | `openai`      |
+| Voice model         | `voice_model`                      | `gpt-live-1`  |
+| Voice               | `voice`                            | `marin`       |
+| Delegation model    | `reasoning_model`                  | `gpt-6-luna`  |
+| Reasoning effort    | `reasoning_effort`                 | `low`         |
+| Service tier        | `reasoning_service_tier`           | `auto`        |
+| Verbosity           | `reasoning_verbosity`              | `medium`      |
+| Parallel tool calls | `reasoning_parallel_tool_calls`    | `true`        |
+| Delegation prompt   | `reasoning_instructions`           | none — written per Intro, always |
+
+`tenant_ai_voice_prompt` carries a `speech_to_speech_settings` object too: the tenant
+defaults a new Intro starts from. They are not inherited at call time, so send the full
+object on the Intro. See `speech-to-speech.md`.
+
 ## Conversion path
 
 | Setting         | MCP field     | Values                                 |

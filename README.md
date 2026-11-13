@@ -35,6 +35,8 @@ references/
   global-rules.md                     verbatim Voice Prompt rule blocks
   variables.md                        standard {} variable set and injection points
   ooo-and-callback.md                 Out of Office and scheduled callback templates
+  speech-to-speech.md                 S2S Intros: rules, delegation prompt, cascade conversion
+  s2s-templates.md                    S2S Intro body, delegation prompt and tool row templates
   examples/                           anonymized production scripts, indexed in README.md
 ```
 

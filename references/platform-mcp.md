@@ -72,6 +72,16 @@ in the Intro's `second_outbound_sentence` while the Voice Prompt's
 `content_outbound` and `content_inbound` are the Intro bodies, injected at `{intro}`
 in the Voice Prompt. When inbound and outbound share a flow they are simply identical.
 
+## Voice engine is per Intro
+
+`tenant_ai_intros` carries `voice_engine` (`cascade` | `speech_to_speech`; `null` falls
+back to the voice assistant's) and `speech_to_speech_settings`. `list` and `read` return
+`effective_voice_engine` — check it before editing any Intro, because the two engines
+are written differently. The delegation prompt of an S2S Intro is
+`speech_to_speech_settings.reasoning_instructions`; send only the keys being changed.
+`tenant_ai_call_context_preview` shows the engine a call would run on under
+`pipeline_config.engine`. See `speech-to-speech.md`.
+
 ## Intros carry the tag that selects them
 
 An Intro is not only the main script. The `tag` field is matched against the contact's
@@ -168,8 +178,11 @@ the silent cases — wrong number, voicemail, IVR, profanity — as "invoke with
 end_sentence": for those, pass an empty sentence and no message rather than leaving it
 unspecified and letting the default play.
 
-`transfer_call` is **not** configurable here; its `transfer_number` and
-`transfer_sentence` live in the Intro body. Tenants may also reference other tools from
+The tool also holds rows for `transfer_call` (`transfer_number`,
+`transfer_call_sentence`, their descriptions, and `use_tool`), `send_sms` and
+`credit_score`. S2S Intros rely on them — every tool call there uses the row's default
+(`speech-to-speech.md`). On cascade, `transfer_number` and `transfer_sentence` are
+written in the Intro body. Tenants may also reference other tools from
 prompt text (`ping_post_meeting`, `ping_post_meeting_book` appear in production
 scheduling prompts), so read the existing prompt before assuming the tool list.
 
